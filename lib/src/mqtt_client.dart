@@ -18,7 +18,7 @@ typedef ConnectCallback = void Function();
 /// either a [MqttClientServer] class or an [MqttBrowserClient] as needed.
 /// This class now provides common functionality between server side
 /// and web based clients.
-class MqttClient {
+abstract class MqttClient {
   /// Initializes a new instance of the MqttClient class using the
   /// default Mqtt Port.
   /// The server hostname to connect to
@@ -77,6 +77,9 @@ class MqttClient {
 
   final MqttClientConnectionStatus _connectionStatus =
       MqttClientConnectionStatus();
+
+  Future<MqttClientConnectionStatus> connect(
+      [String username, String password]);
 
   /// Gets the current connection status of the Mqtt Client.
   /// This is the connection state as above also with the broker return code.

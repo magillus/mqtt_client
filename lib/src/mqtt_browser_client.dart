@@ -29,6 +29,7 @@ class MqttBrowserClient extends MqttClient {
   /// any previously set in a supplied connection message so if you
   /// supply your own connection message and use the authenticateAs method to
   /// set these parameters do not set them again here.
+  @override
   Future<MqttClientConnectionStatus> connect(
       [String username, String password]) async {
     checkCredentials(username, password);
