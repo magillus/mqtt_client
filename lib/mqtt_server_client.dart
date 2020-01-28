@@ -15,6 +15,7 @@ import 'package:crypto/crypto.dart';
 import 'package:event_bus/event_bus.dart' as events;
 import 'package:typed_data/typed_data.dart' as typed;
 import 'mqtt_client.dart';
+export 'src/stub/mqtt_server_stub.dart';
 
 part 'src/connectionhandling/mqtt_client_mqtt_connection_handler.dart';
 part 'src/connectionhandling/mqtt_client_mqtt_normal_connection.dart';
