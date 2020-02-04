@@ -52,6 +52,8 @@ class MqttBrowserConnection {
         _onData(e.data);
       });
       client.onError.listen((e) {
+        MqttLogger.log(
+            'MqttBrowserConnection::_startListening - websocket has errored');
         _onError(e);
       });
     } on Exception catch (e) {
@@ -109,9 +111,9 @@ class MqttBrowserConnection {
   /// OnError listener callback
   void _onError(dynamic error) {
     _disconnect();
-    MqttLogger.log(
-        'MqttBrowserConnection::_onError - calling disconnected callback');
     if (onDisconnected != null) {
+      MqttLogger.log(
+          'MqttBrowserConnection::_onError - calling disconnected callback');
       onDisconnected();
     }
   }
@@ -137,7 +139,7 @@ class MqttBrowserConnection {
     final messageBytes = message.read(message.length);
     var buffer = messageBytes.buffer;
     var bdata = ByteData.view(buffer);
-    client.sendTypedData(bdata);
+    client?.sendTypedData(bdata);
   }
 
   /// User requested disconnection

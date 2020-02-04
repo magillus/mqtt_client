@@ -24,7 +24,7 @@ class MqttClient {
   /// The server hostname to connect to
   /// The client identifier to use to connect with
   MqttClient(this.server, this.clientIdentifier) {
-    port = Constants.defaultMqttPort;
+    port = MqttClientConstants.defaultMqttPort;
   }
 
   /// Initializes a new instance of the MqttClient class using
@@ -45,7 +45,24 @@ class MqttClient {
 
   /// The Handler that is managing the connection to the remote server.
   @protected
-  IMqttConnectionHandler connectionHandler;
+  dynamic connectionHandler;
+
+  @protected
+  List<String> websocketProtocolString;
+
+  /// User definable websocket protocols. Use this for non default websocket
+  /// protocols only if your broker needs this. There are two defaults in
+  /// MqttWsConnection class, the multiple protocol is the default. Some brokers
+  /// will not accept a list and only expect a single protocol identifier,
+  /// in this case use the single protocol default. You can supply your own
+  /// list, or to disable this entirely set the protocols to an
+  /// empty list , i.e [].
+  set websocketProtocols(List<String> protocols) {
+    websocketProtocolString = protocols;
+    if (connectionHandler != null) {
+      connectionHandler.websocketProtocols = protocols;
+    }
+  }
 
   /// The subscriptions manager responsible for tracking subscriptions.
   @protected
@@ -56,7 +73,7 @@ class MqttClient {
   MqttConnectionKeepAlive keepAlive;
 
   /// Keep alive period, seconds
-  int keepAlivePeriod = Constants.defaultKeepAlive;
+  int keepAlivePeriod = MqttClientConstants.defaultKeepAlive;
 
   /// Handles everything to do with publication management.
   @protected
@@ -166,7 +183,7 @@ class MqttClient {
           .withClientIdentifier(clientIdentifier)
           // Explicitly set the will flag
           .withWillQos(MqttQos.atMostOnce)
-          .keepAliveFor(Constants.defaultKeepAlive)
+          .keepAliveFor(MqttClientConstants.defaultKeepAlive)
           .authenticateAs(username, password)
           .startClean();
 
@@ -233,6 +250,8 @@ class MqttClient {
     // the broker has been previously established.
     if (connectionStatus.state == MqttConnectionState.connected) {
       _disconnect(unsolicited: true);
+    } else {
+      _disconnect(unsolicited: false);
     }
   }
 
@@ -269,14 +288,14 @@ class MqttClient {
       MqttLogger.log("Authenticating with username '{$username}' "
           "and password '{$password}'");
       if (username.trim().length >
-          Constants.recommendedMaxUsernamePasswordLength) {
+          MqttClientConstants.recommendedMaxUsernamePasswordLength) {
         MqttLogger.log('Username length (${username.trim().length}) '
             'exceeds the max recommended in the MQTT spec. ');
       }
     }
     if (password != null &&
         password.trim().length >
-            Constants.recommendedMaxUsernamePasswordLength) {
+            MqttClientConstants.recommendedMaxUsernamePasswordLength) {
       MqttLogger.log('Password length (${password.trim().length}) '
           'exceeds the max recommended in the MQTT spec. ');
     }
@@ -292,13 +311,13 @@ class MqttClient {
 
   /// Set the protocol version to V3.1 - default
   void setProtocolV31() {
-    Protocol.version = Constants.mqttV31ProtocolVersion;
-    Protocol.name = Constants.mqttV31ProtocolName;
+    Protocol.version = MqttClientConstants.mqttV31ProtocolVersion;
+    Protocol.name = MqttClientConstants.mqttV31ProtocolName;
   }
 
   /// Set the protocol version to V3.1.1
   void setProtocolV311() {
-    Protocol.version = Constants.mqttV311ProtocolVersion;
-    Protocol.name = Constants.mqttV311ProtocolName;
+    Protocol.version = MqttClientConstants.mqttV311ProtocolVersion;
+    Protocol.name = MqttClientConstants.mqttV311ProtocolName;
   }
 }
