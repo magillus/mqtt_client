@@ -103,7 +103,7 @@ class MqttWs2Connection extends MqttConnection {
   }
 
   /// The websocket subprotocol list
-  List<String> protocols = MqttClientConstants.protocolsMultipleDefault;
+  List<String> protocols = MqttClientConstants.protocolsSingleDefault;
 
   /// The security context for secure usage
   SecurityContext context;
